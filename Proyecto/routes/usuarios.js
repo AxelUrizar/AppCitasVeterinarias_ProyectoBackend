@@ -1,6 +1,4 @@
 const express = require("express");
-const res = require("express/lib/response");
-const sequelize = require("sequelize");
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth')

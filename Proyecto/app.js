@@ -13,9 +13,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Bienvenido!')
 });
 
 app.use('/usuarios', require('./routes/usuarios'));
+app.use('/mascotas', require('./routes/mascotas'));
 
 app.listen(PORT, () => { console.log(`App corriendo en el puerto: ${PORT}`)})

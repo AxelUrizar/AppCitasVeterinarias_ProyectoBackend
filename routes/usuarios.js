@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth')
-const {Usuario, Mascota, Token} = require('../models');
+const {Usuario, Mascota, Token, Cita, Veterinario} = require('../models');
 
 // Crear Usuario
 router.post('/', async (req, res, next) => {
@@ -30,15 +30,40 @@ router.get('/', async (req, res, next) => {
 
 // Ver perfil
 router.get('/perfil', auth, async (req, res, next) => {
-    const verUsuario = await Usuario.findOne({
-        where: {
-            id: req.usuario.id
-        },
-        include: [{
-            model: Mascota
-        }]
-    })
-    res.json(verUsuario)
+    try {
+        const verUsuario = await Usuario.findOne({
+            where: {
+                id: req.usuario.id
+            },
+            include: [{
+                model: Mascota,
+                include: [{
+                    model: Cita,
+                    include: [{
+                        model: Veterinario,
+                        as: 'veterinario',
+                        attributes: [
+                            'nombre', 'especialidad'
+                        ]
+                    }],
+                    attributes:[
+                        'descripcion', 'fechaCita'
+                    ]
+                }],
+                attributes: [
+                    'nombre', 'especie', 'sexo'
+                ]
+            }],
+            attributes: [
+                'nombre', 'email', 'direccion'
+            ]
+        })
+
+        res.json(verUsuario)
+
+    } catch (error) {
+        res.json(error)
+    }
 })
 
 // Eliminar Usuario
@@ -74,6 +99,7 @@ router.post('/login', async (req, res) => {
 // Logout usuario
 router.delete('/logout', async (req, res) => {
     const {token} = req.body;
+    //TODO:usar token Auth
     if(token == null) return res.json({error: 'Invalid credentials'});
 
     const logout = await Token.destroy({

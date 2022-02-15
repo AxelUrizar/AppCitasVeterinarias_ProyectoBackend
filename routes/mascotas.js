@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth')
-const {Mascota} = require('../models');
+const {Mascota, Cita, Veterinario} = require('../models');
 
 // Mostrar mascotas
 router.get('/', async (req, res) => {
@@ -12,16 +11,34 @@ router.get('/', async (req, res) => {
 
 // Mostrar mascotas de un usuario
 router.get('/usuario', auth, async (req, res) => {
-    const mostrarMascotas = await Mascota.findAll({
-        where: {
-            usuarioId: req.usuario.id
-        },
-        attributes: [
-            'nombre', 'especie', 'sexo'
-        ]
-    })
-    res.json(mostrarMascotas)
+    try {
+        const mostrarMascotas = await Mascota.findAll({
+            where: {
+                usuarioId: req.usuario.id
+            },
+            include: {
+                model: Cita,
+                include: {
+                    model: Veterinario,
+                    as: 'veterinario',
+                    attributes: [
+                        'nombre', 'especialidad'
+                    ]
+                },
+                attributes:[
+                    'descripcion', 'fechaCita'
+                ]
+            },
+            attributes: [
+                'nombre', 'especie', 'sexo'
+            ]
+        })
+        res.json(mostrarMascotas)
+    } catch (error) {
+        res.json(error)
+    }
 })
+    
 
 // Añadir nueva mascota
 router.post('/nuevaMascota', auth, async (req, res) => {
@@ -37,8 +54,10 @@ router.delete('/borrarMascota', auth, async (req, res) => {
 
     const borrarMascota = await Mascota.destroy({
         where: {
-            usuarioId: req.usuario.id,
-            nombre: nombre
+            [Op.and]: [
+                {usuarioId: req.usuario.id},
+                {nombre: nombre}
+            ]
         }
     })
 

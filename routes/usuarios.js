@@ -1,113 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth')
-const {Usuario, Mascota, Token, Cita, Veterinario} = require('../models');
-
-// Crear Usuario
-router.post('/', async (req, res, next) => {
-    const {nombre, email, contrasenya, direccion} = req.body;
-
-    const userExists = await Usuario.findOne({
-        where: { email: email }
-    });
-    if (userExists !== null) { return res.status(401).json({message: 'email incorrecto'}); }
-
-    const user = await Usuario.create({nombre: nombre, email: email, contrasenya: contrasenya, direccion: direccion});
-    res.json(user)
-});
-
+const contrUsuarios = require('../controllers/contrUsuarios')
 
 // Ver usuarios (con mascotas)
-router.get('/', async (req, res, next) => {
-    const verUsuarios = await Usuario.findAll({
-        include: [{
-            model: Mascota
-        }]
-    })
-    res.json(verUsuarios)
-})
+router.get('/', contrUsuarios.mostrarUsuarios)
 
 // Ver perfil
-router.get('/perfil', auth, async (req, res, next) => {
-    try {
-        const verUsuario = await Usuario.findOne({
-            where: {
-                id: req.usuario.id
-            },
-            include: [{
-                model: Mascota,
-                include: [{
-                    model: Cita,
-                    include: [{
-                        model: Veterinario,
-                        as: 'veterinario',
-                        attributes: [
-                            'nombre', 'especialidad'
-                        ]
-                    }],
-                    attributes:[
-                        'descripcion', 'fechaCita'
-                    ]
-                }],
-                attributes: [
-                    'nombre', 'especie', 'sexo'
-                ]
-            }],
-            attributes: [
-                'nombre', 'email', 'direccion'
-            ]
-        })
+router.get('/perfil', auth, contrUsuarios.perfilUsuario)
 
-        res.json(verUsuario)
-
-    } catch (error) {
-        res.json(error)
-    }
-})
+// Crear Usuario
+router.post('/nuevoUsuario', contrUsuarios.nuevoUsuario);
 
 // Eliminar Usuario
-router.delete('/', auth, async (req, res) => {
-    const borrarUsuario = await Usuario.destroy({
-        where: {
-            id: req.usuario.id
-        }
-    })
-
-    res.json('Usuario eliminado.')    
-})
+router.delete('/eliminar', auth, contrUsuarios.eliminarUsuario)
 
 // Login usuario
-router.post('/login', async (req, res) => {
-    const {email, contrasenya} = req.body;
-
-    const usuario = await Usuario.findOne({
-        where: {
-            email: email,
-            contrasenya: contrasenya
-        }
-    });
-
-    if (!usuario) return res.json({ error: 'Invalid login credentials' })
-
-    const generarToken = jwt.sign({id: usuario.id, nombre: usuario.nombre, email:usuario.email}, process.env.JWT_SECRET)
-    const login = await Token.create({token: generarToken, usuarioId: usuario.id});
-
-    res.json('User logged');
-})
+router.post('/login', contrUsuarios.login)
 
 // Logout usuario
-router.delete('/logout', async (req, res) => {
-    const {token} = req.body;
-    //TODO:usar token Auth
-    if(token == null) return res.json({error: 'Invalid credentials'});
-
-    const logout = await Token.destroy({
-        where: {
-            token: token
-        }
-    })
-    res.json('Logout completed')
-})
+router.delete('/logout', auth, contrUsuarios.logout)
 
 module.exports = router;

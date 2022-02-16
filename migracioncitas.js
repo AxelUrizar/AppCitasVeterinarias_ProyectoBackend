@@ -1,7 +1,5 @@
 'use strict';
 
-const veterinario = require("../models/veterinario");
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Cita', {
@@ -27,6 +25,14 @@ module.exports = {
         onDelete: 'set Null',
         references: {
           model: 'Veterinarios',
+          key: 'id'
+        }
+      },
+      usuarioId: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Usuario',
           key: 'id'
         }
       },

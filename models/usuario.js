@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
       Usuario.hasMany(models.Token, {
         foreignKey: 'usuarioId'
       })
+      Usuario.hasMany(models.Cita, {
+        foreignKey: 'usuarioId'
+      })
     }
   }
   Usuario.init({

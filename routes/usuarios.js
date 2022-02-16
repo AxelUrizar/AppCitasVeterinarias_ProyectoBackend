@@ -10,7 +10,7 @@ router.get('/', contrUsuarios.mostrarUsuarios)
 router.get('/perfil', auth, contrUsuarios.perfilUsuario)
 
 // Crear Usuario
-router.post('/nuevoUsuario', contrUsuarios.nuevoUsuario);
+router.post('/registrarse', contrUsuarios.nuevoUsuario);
 
 // Eliminar Usuario
 router.delete('/eliminar', auth, contrUsuarios.eliminarUsuario)

@@ -11,7 +11,7 @@ router.get('/', contrCitas.mostrarCitas)
 router.get('/usuario', auth, contrCitas.citasUsuario)
 
 // Crear cita
-router.post('/', auth, contrCitas.nuevaCita)
+router.post('/nuevaCita', auth, contrCitas.nuevaCita)
 
 // Borrar cita
 router.delete('/eliminar/:id', auth, contrCitas.borrarCita)

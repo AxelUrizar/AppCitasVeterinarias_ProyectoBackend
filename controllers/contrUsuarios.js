@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const {Usuario, Mascota, Token, Cita, Veterinario} = require('../models');
-const Sequelize = require('sequelize')
+const Sequelize = require('sequelize');
+const { token } = require('morgan');
 const Op = Sequelize.Op;
 
 exports.mostrarUsuarios = async (req, res, next) => {
@@ -83,12 +84,12 @@ exports.login = async (req, res) => {
         }
     });
 
-    if (!usuario) return res.json({ error: 'Invalid login credentials' })
+    if (!usuario) return res.json('No se pudo realizar esa acción')
 
     const generarToken = jwt.sign({id: usuario.id, nombre: usuario.nombre, email:usuario.email}, process.env.JWT_SECRET)
     const login = await Token.create({token: generarToken, usuarioId: usuario.id});
 
-    res.json('User logged');
+    res.json({User_Status: 'Logged', token: generarToken});
 }
 
 exports.logout = async (req, res) => {

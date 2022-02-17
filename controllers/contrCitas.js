@@ -9,7 +9,7 @@ exports.mostrarCitas = async (req, res) => {
 
 exports.citasUsuario = async (req, res) => {
     try {
-        const verCitas = await Cita.findOne({
+        const verCitas = await Cita.findAll({
             where: {
                 usuarioId: req.usuario.id
             },

@@ -3,8 +3,13 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 exports.mostrarCitas = async (req, res) => {
-    const verCitas = await Cita.findAll();
-    res.json(verCitas);
+    try {
+        const verCitas = await Cita.findAll();
+        res.status(200).json(verCitas);
+        
+    } catch (error) {
+        res.status(500).json(error);
+    }
 }
 
 exports.citasUsuario = async (req, res) => {
@@ -13,13 +18,12 @@ exports.citasUsuario = async (req, res) => {
             where: {
                 usuarioId: req.usuario.id
             },
-            // attributes:
         })
     
-        res.json(verCitas)
+        res.status(200).json(verCitas)
         
     } catch (error) {
-        res.json(error)
+        res.status(500).json(error)
     }
 }
 
@@ -53,9 +57,11 @@ exports.nuevaCita = async (req, res) => {
 
         const nuevaCita = await Cita.create({ descripcion: descripcion, mascotaId: mascotaConf.id, veterinarioId: veterinarioConf.id, usuarioId: usuarioId.id, fechaCita: fechaCitaCalc })
 
-        res.json(nuevaCita)
+        res.status(200).json(nuevaCita)
+
     } catch (error) {
-        res.json(error)
+
+        res.status(500).json(error)
     }
 }
 
@@ -76,10 +82,10 @@ exports.borrarCita = async (req, res) => {
             }
         })
 
-        if (borrarCita === 1) return res.json('Cita borrada') 
+        if (borrarCita === 1) return res.status(200).json('Cita borrada') 
 
     } catch (error) {
-        res.json(error)
+        res.status(500).json(error)
     }
     
 }
@@ -112,10 +118,10 @@ exports.modificarCita = async (req, res) => {
         
         if (citaActualizada === 0) return 
         
-        res.json(verCitas)
+        res.status(200).json(verCitas)
 
     } catch (error) {
-        res.json(error)
+        res.status(500).json(error)
     }
     
 }

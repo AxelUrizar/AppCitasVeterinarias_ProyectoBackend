@@ -30,31 +30,47 @@ exports.mostrarUsuario = async (req, res) => {
                 'nombre', 'especie', 'sexo'
             ]
         })
-        res.json(mostrarMascotas)
+
+        if (mostrarMascotas === null) return res.status(404)
+        res.status(200).json(mostrarMascotas)
     } catch (error) {
-        res.json(error)
+        res.status(500).json(error)
     }
 }
 
 exports.nuevaMascota = async (req, res) => {
-    const { nombre, especie, sexo } = req.body;
-    const nuevaMascota = await Mascota.create({nombre: nombre, especie:especie, sexo:sexo, usuarioId:req.usuario.id});
+    try {
+        const { nombre, especie, sexo } = req.body;
+        const nuevaMascota = await Mascota.create({
+            nombre: nombre, 
+            especie:especie, 
+            sexo:sexo, 
+            usuarioId:req.usuario.id
+        });
 
-    res.json(nuevaMascota);    
+        res.json(nuevaMascota);    
+        
+    } catch (error) {
+        res.status(500).json(error)
+    }
 }
 
 exports.borrarMascota = async (req, res) => {
-    const {nombre} = req.body;
-
-    const borrarMascota = await Mascota.destroy({
-        where: {
-            [Op.and]: [
-                {usuarioId: req.usuario.id},
-                {nombre: nombre}
-            ]
-        }
-    })
-
-    res.json('Mascota eliminada.')    
+    try {
+        const {nombre} = req.body;
+    
+        const borrarMascota = await Mascota.destroy({
+            where: {
+                [Op.and]: [
+                    {usuarioId: req.usuario.id},
+                    {nombre: nombre}
+                ]
+            }
+        })
+        
+        res.status(200).json('Mascota eliminada.')    
+    } catch (error) {
+        res.status(500).json(error)
+    }
 }
 

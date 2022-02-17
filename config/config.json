@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "axelinho1",
+    "password": "",
     "database": "citas_veterinario",
     "host": "127.0.0.1",
     "dialect": "mysql"

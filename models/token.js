@@ -18,8 +18,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Token.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true
+    },
     token: DataTypes.STRING,
-    usuarioId: DataTypes.INTEGER
+    usuarioId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'Token',

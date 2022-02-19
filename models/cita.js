@@ -29,10 +29,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Cita.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true
+    },
     descripcion: DataTypes.STRING,
-    mascotaId: DataTypes.INTEGER,
-    veterinarioId: DataTypes.INTEGER,
-    usuarioId: DataTypes.INTEGER,
+    mascotaId: DataTypes.UUID,
+    veterinarioId: DataTypes.UUID,
+    usuarioId: DataTypes.UUID,
     fechaCita: DataTypes.STRING
   }, {
     sequelize,

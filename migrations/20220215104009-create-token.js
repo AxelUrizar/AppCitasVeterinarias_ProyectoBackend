@@ -4,21 +4,22 @@ module.exports = {
     await queryInterface.createTable('Tokens', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       token: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       usuarioId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: {
           model: 'Usuarios',
           key: 'id',
           as: 'usuarioId'
-        }
+        },
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

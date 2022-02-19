@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Veterinario.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true
+    },
     nombre: DataTypes.STRING,
     especialidad: DataTypes.STRING
   }, {

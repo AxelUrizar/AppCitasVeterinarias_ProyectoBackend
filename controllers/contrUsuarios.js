@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const {v4: uuidv4} = require('uuid');
+const bcrypt = require('bcrypt');
 const {Usuario, Mascota, Token, Cita, Veterinario} = require('../models');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -47,7 +49,7 @@ exports.perfilUsuario = async (req, res, next) => {
             ]
         })
 
-        if (findOne === null) return res.status(401).json('Credenciales no válidas')
+        if (!verUsuario) return res.status(401).json('Credenciales no válidas')
         
         res.json(verUsuario)
         
@@ -65,7 +67,8 @@ exports.nuevoUsuario = async (req, res, next) => {
         });
         if (userExists !== null)  return res.status(401).json({message: 'Introduzca un email valido'}); 
     
-        const user = await Usuario.create({nombre: nombre, email: email, contrasenya: contrasenya, direccion: direccion});
+        const encriptadoContr = await bcrypt.hash(contrasenya, 8);
+        const user = await Usuario.create({id: uuidv4(), nombre: nombre, email: email, contrasenya: encriptadoContr, direccion: direccion});
         
         res.status(200).json(user)
         
@@ -98,14 +101,16 @@ exports.login = async (req, res) => {
         const usuario = await Usuario.findOne({
             where: {
                 email: email,
-                contrasenya: contrasenya
             }
         });
-    
         if (usuario === null) return res.status(401).json('No se pudo realizar esa acción')
+
+        const validarContraseña = await bcrypt.compare(contrasenya, usuario.contrasenya)
+        
+        if(!validarContraseña)return res.status(401).json('No se pudo realizar esa acción')
     
         const generarToken = jwt.sign({id: usuario.id, nombre: usuario.nombre, email:usuario.email}, process.env.JWT_SECRET)
-        const login = await Token.create({token: generarToken, usuarioId: usuario.id});
+        const login = await Token.create({id: uuidv4(), token: generarToken, usuarioId: usuario.id});
     
         res.status(200).json({User_Status: 'Logged', token: generarToken});
         
@@ -115,19 +120,33 @@ exports.login = async (req, res) => {
 }
 
 exports.logout = async (req, res) => {
-    try {
-        const {id} = req.body;
-        
+    try {        
         const logout = await Token.destroy({
             where: {
                 [Op.and]: [
                     {usuarioId: req.usuario.id},
-                    {id: id}
+                    {token: req.token}
                 ]
             }
         })
 
-        if (logout === 0) return res.status(404).json({error_message: 'Introduce un token válido' })
+        if (!logout) return res.status(404).json({error_message: 'Introduce un token válido' })
+        res.status(200).json('Logout completed')
+        
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+exports.logoutAll = async (req, res) => {
+    try {        
+        const logout = await Token.destroy({
+            where: {
+                usuarioId: req.usuario.id
+            }
+        })
+
+        if (!logout) return res.status(404).json({error_message: 'Error de credenciales.' })
         res.status(200).json('Logout completed')
         
     } catch (error) {

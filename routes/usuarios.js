@@ -21,4 +21,7 @@ router.post('/login', contrUsuarios.login)
 // Logout usuario
 router.delete('/logout', auth, contrUsuarios.logout)
 
+// Logout all usuario
+router.delete('/logoutAll', auth, contrUsuarios.logoutAll)
+
 module.exports = router;

@@ -1,4 +1,5 @@
 const {Mascota, Veterinario, Usuario, Cita} = require('../models');
+const {v4: uuidv4} = require('uuid')
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -55,7 +56,7 @@ exports.nuevaCita = async (req, res) => {
         const fecha = new Date()
         const fechaCitaCalc = fecha.toLocaleDateString(fecha.setDate(fecha.getDate() + 7))
 
-        const nuevaCita = await Cita.create({ descripcion: descripcion, mascotaId: mascotaConf.id, veterinarioId: veterinarioConf.id, usuarioId: usuarioId.id, fechaCita: fechaCitaCalc })
+        const nuevaCita = await Cita.create({ id: uuidv4(), descripcion: descripcion, mascotaId: mascotaConf.id, veterinarioId: veterinarioConf.id, usuarioId: usuarioId.id, fechaCita: fechaCitaCalc })
 
         res.status(200).json(nuevaCita)
 

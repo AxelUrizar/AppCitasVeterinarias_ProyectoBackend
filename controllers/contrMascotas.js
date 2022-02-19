@@ -1,4 +1,5 @@
 const {Mascota, Cita, Veterinario} = require('../models');
+const {v4: uuidv4} = require('uuid')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op;
 
@@ -42,6 +43,7 @@ exports.nuevaMascota = async (req, res) => {
     try {
         const { nombre, especie, sexo } = req.body;
         const nuevaMascota = await Mascota.create({
+            id: uuidv4(),
             nombre: nombre, 
             especie:especie, 
             sexo:sexo, 

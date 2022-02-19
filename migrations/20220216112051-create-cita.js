@@ -4,39 +4,42 @@ module.exports = {
     await queryInterface.createTable('Cita', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       descripcion: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       mascotaId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: {
           model: 'Mascota',
           key: 'id'
-        }
+        },
+        allowNull: false
       },
       veterinarioId: {
-        type: Sequelize.INTEGER,
-        onDelete: 'set Null',
+        type: Sequelize.UUID,
         references: {
           model: 'Veterinarios',
           key: 'id'
-        }
+        },
+        allowNull: false
       },
       usuarioId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: {
           model: 'Usuarios',
           key: 'id'
-        }
+        },
+        allowNull: false
       },
       fechaCita: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

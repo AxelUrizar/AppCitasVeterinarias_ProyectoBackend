@@ -1,8 +1,10 @@
 'use strict';
+const {v4: uuidv4} = require('uuid')
 
 module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('Cita', [{
+      id: uuidv4(),
       descripcion: 'Dolencia de ala',
       mascotaId: 1,
       veterinarioId: 1,
@@ -12,6 +14,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: uuidv4(),
       descripcion: 'Plumaje maltratado',
       mascotaId: 2,
       veterinarioId: 2,
@@ -21,6 +24,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: uuidv4(),
       descripcion: 'Exceso de facha',
       mascotaId: 3,
       veterinarioId: 3,

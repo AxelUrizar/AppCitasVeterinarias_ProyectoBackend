@@ -60,7 +60,7 @@ exports.perfilUsuario = async (req, res, next) => {
 
 exports.nuevoUsuario = async (req, res, next) => {
     try {
-        const {nombre, email, contrasenya, direccion} = req.body;
+        const {nombre, email, contrasenya} = req.body;
     
         const userExists = await Usuario.findOne({
             where: { email: email }
@@ -68,7 +68,7 @@ exports.nuevoUsuario = async (req, res, next) => {
         if (userExists !== null)  return res.status(401).json({message: 'Introduzca un email valido'}); 
     
         const encriptadoContr = await bcrypt.hash(contrasenya, 8);
-        const user = await Usuario.create({id: uuidv4(), nombre: nombre, email: email, contrasenya: encriptadoContr, direccion: direccion});
+        const user = await Usuario.create({id: uuidv4(), nombre: nombre, email: email, contrasenya: encriptadoContr});
         
         res.status(200).json(user)
         

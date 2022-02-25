@@ -13,9 +13,9 @@ exports.mostrarUsuarios = async (req, res, next) => {
             }]
         })
         
-        res.status(200).json(verUsuarios)
+        return res.status(200).json(verUsuarios)
     } catch (error) {
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
 }
 
@@ -24,37 +24,15 @@ exports.perfilUsuario = async (req, res, next) => {
         const verUsuario = await Usuario.findOne({
             where: {
                 id: req.usuario.id
-            },
-            include: [{
-                model: Mascota,
-                include: [{
-                    model: Cita,
-                    include: [{
-                        model: Veterinario,
-                        as: 'veterinario',
-                        attributes: [
-                            'nombre', 'especialidad'
-                        ]
-                    }],
-                    attributes:[
-                        'descripcion', 'fechaCita'
-                    ]
-                }],
-                attributes: [
-                    'nombre', 'especie', 'sexo'
-                ]
-            }],
-            attributes: [
-                'nombre', 'email', 'direccion'
-            ]
+            }
         })
 
         if (!verUsuario) return res.status(401).json('Credenciales no válidas')
         
-        res.json(verUsuario)
+        return res.json(verUsuario)
         
     } catch (error) {
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
 }
 
@@ -70,10 +48,10 @@ exports.nuevoUsuario = async (req, res, next) => {
         const encriptadoContr = await bcrypt.hash(contrasenya, 8);
         const user = await Usuario.create({id: uuidv4(), nombre: nombre, email: email, contrasenya: encriptadoContr});
         
-        res.status(200).json(user)
+        return res.status(200).json(user)
         
     } catch (error) {
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
 }
 
@@ -112,10 +90,10 @@ exports.login = async (req, res) => {
         const generarToken = jwt.sign({id: usuario.id, nombre: usuario.nombre, email:usuario.email}, process.env.JWT_SECRET)
         const login = await Token.create({id: uuidv4(), token: generarToken, usuarioId: usuario.id});
     
-        res.status(200).json({User_Status: 'Logged', token: generarToken});
+        return res.status(200).json({token: generarToken});
         
     } catch (error) {
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
 }
 

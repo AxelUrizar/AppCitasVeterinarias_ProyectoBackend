@@ -4,7 +4,7 @@ const {v4: uuidv4} = require('uuid')
 module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('Mascota', [{
-      id: uuidv4(),
+      id: 1,
       nombre: 'Kay',
       especie: 'Pajaro',
       sexo: 'Femenino',
@@ -13,7 +13,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      id: uuidv4(),
+      id: 2,
       nombre: 'Luna',
       especie: 'Pajaro',
       sexo: 'Femenino',
@@ -22,7 +22,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      id: uuidv4(),
+      id: 3,
       nombre: 'Roy',
       especie: 'Perro',
       sexo: 'Masculino',

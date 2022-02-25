@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         as: 'mascota',
         onDelete: 'CASCADE'
       })
-      Cita.hasOne(models.Veterinario, {
+      Cita.belongsTo(models.Veterinario, {
         foreignKey: 'id',
         as: 'veterinario',
-        onDelete: 'ser NULL'
+        onDelete: 'CASCADE'
       })
       Cita.hasOne(models.Usuario, {
         foreignKey: 'id',

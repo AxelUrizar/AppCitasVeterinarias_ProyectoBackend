@@ -18,7 +18,7 @@ exports.citasUsuario = async (req, res) => {
         const verCitas = await Cita.findAll({
             where: {
                 usuarioId: req.usuario.id
-            },
+            }
         })
     
         res.status(200).json(verCitas)
@@ -28,15 +28,47 @@ exports.citasUsuario = async (req, res) => {
     }
 }
 
+exports.citasMascota = async (req, res) => {
+    try {
+        const verCitas = await Cita.findAll({
+            where: {
+                mascotaId: req.params.id
+            }
+        })
+
+        if(verCitas.length === 0) return res.status(200).json(false)
+
+        return res.status(200).json(verCitas)
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+}
+
+exports.citaId = async (req, res) => {
+    try {
+        const {idCita} = req.params
+        const citaId = await Cita.findOne({
+            where: {
+                id: idCita
+            }
+        })
+
+        return res.status(200).json(citaId)
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+}
+
 exports.nuevaCita = async (req, res) => {
     try {
-        const { descripcion, mascotaId, veterinarioId } = req.body;
+        const { descripcion, veterinarioId } = req.body;
+        const id = req.params.id
 
         const mascotaConf = await Mascota.findOne({
             where: {
                 [Op.and]: [
                     {usuarioId: req.usuario.id},
-                    {id: mascotaId} 
+                    {id: id} 
                 ]
             }
         })
@@ -58,11 +90,11 @@ exports.nuevaCita = async (req, res) => {
 
         const nuevaCita = await Cita.create({ id: uuidv4(), descripcion: descripcion, mascotaId: mascotaConf.id, veterinarioId: veterinarioConf.id, usuarioId: usuarioId.id, fechaCita: fechaCitaCalc })
 
-        res.status(200).json(nuevaCita)
+        return res.status(200).json(nuevaCita)
 
     } catch (error) {
 
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
 }
 
@@ -71,7 +103,7 @@ exports.borrarCita = async (req, res) => {
         const citaSelec = await Cita.findOne({
             where: {
                 [Op.and]:[
-                    {id: req.params.id},
+                    {id: req.params.idCita},
                     {usuarioId: req.usuario.id}
                 ]
             },
@@ -86,25 +118,28 @@ exports.borrarCita = async (req, res) => {
         if (borrarCita === 1) return res.status(200).json('Cita borrada') 
 
     } catch (error) {
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
     
 }
 
 exports.modificarCita = async (req, res) => {
     try {
-        const { id } = req.body;
+        const { descripcion, veterinarioId } = req.body;
+        const {idCita} = req.params
     
         const fecha = new Date()
         const fechaCitaCalc = fecha.toLocaleDateString(fecha.setDate(fecha.getDate() + 7))
     
         const citaActualizada = await Cita.update({
-            fechaCita: fechaCitaCalc
+            fechaCita: fechaCitaCalc,
+            descripcion: descripcion,
+            veterinarioId: veterinarioId
         },
         {
             where: {
                 [Op.and]: [
-                    {id: id},
+                    {id: idCita},
                     {usuarioId: req.usuario.id}
                 ]
             }
@@ -119,10 +154,10 @@ exports.modificarCita = async (req, res) => {
         
         if (citaActualizada === 0) return 
         
-        res.status(200).json(verCitas)
+        return res.status(200).json(verCitas)
 
     } catch (error) {
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
     
 }

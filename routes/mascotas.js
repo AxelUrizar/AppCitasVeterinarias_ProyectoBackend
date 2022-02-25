@@ -8,6 +8,9 @@ router.get('/', contrMascotas.mostrarTodo)
 
 // Mostrar mascotas de un usuario
 router.get('/usuario', auth, contrMascotas.mostrarUsuario)
+
+// Buscar mascota por Id
+router.get('/:id', contrMascotas.buscarMascotaId)
     
 // Añadir nueva mascota
 router.post('/nuevaMascota', auth, contrMascotas.nuevaMascota)

@@ -23,5 +23,6 @@ app.get('/', (req, res) => {
 app.use('/usuarios', require('./routes/usuarios'));
 app.use('/mascotas', require('./routes/mascotas'));
 app.use('/citas', require('./routes/citas'))
+app.use('/veterinarios', require('./routes/veterinarios'))
 
 app.listen(PORT, () => { console.log(`App corriendo en el puerto: ${PORT}`)})

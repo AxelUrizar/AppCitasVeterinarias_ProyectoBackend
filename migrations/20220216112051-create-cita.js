@@ -22,6 +22,7 @@ module.exports = {
       },
       veterinarioId: {
         type: Sequelize.UUID,
+        onDelete: 'CASCADE',
         references: {
           model: 'Veterinarios',
           key: 'id'

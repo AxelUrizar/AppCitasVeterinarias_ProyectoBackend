@@ -1,7 +1,0 @@
-# Implementar usuario/admin                         -
-
-# Añadir try catch                                  -Hecho
-
-# Añadir comprobaciones email, etc.                 -Hecho
-
-# Usar git flow                                     -Hecho

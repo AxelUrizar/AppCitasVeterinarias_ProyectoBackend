@@ -1,12 +1,16 @@
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors')
 
 require('dotenv').config()
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors({
+    origin: '*'
+}))
 app.use(logger('dev'));
 
 app.use(bodyParser.json());
@@ -19,5 +23,6 @@ app.get('/', (req, res) => {
 app.use('/usuarios', require('./routes/usuarios'));
 app.use('/mascotas', require('./routes/mascotas'));
 app.use('/citas', require('./routes/citas'))
+app.use('/veterinarios', require('./routes/veterinarios'))
 
 app.listen(PORT, () => { console.log(`App corriendo en el puerto: ${PORT}`)})

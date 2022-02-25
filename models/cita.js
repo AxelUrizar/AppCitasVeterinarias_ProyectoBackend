@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         as: 'mascota',
         onDelete: 'CASCADE'
       })
-      Cita.hasOne(models.Veterinario, {
+      Cita.belongsTo(models.Veterinario, {
         foreignKey: 'id',
         as: 'veterinario',
-        onDelete: 'ser NULL'
+        onDelete: 'CASCADE'
       })
       Cita.hasOne(models.Usuario, {
         foreignKey: 'id',
@@ -29,10 +29,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Cita.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true
+    },
     descripcion: DataTypes.STRING,
-    mascotaId: DataTypes.INTEGER,
-    veterinarioId: DataTypes.INTEGER,
-    usuarioId: DataTypes.INTEGER,
+    mascotaId: DataTypes.UUID,
+    veterinarioId: DataTypes.UUID,
+    usuarioId: DataTypes.UUID,
     fechaCita: DataTypes.STRING
   }, {
     sequelize,

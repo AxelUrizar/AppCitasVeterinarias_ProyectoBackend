@@ -21,10 +21,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Mascota.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true
+    },
     nombre: DataTypes.STRING,
     especie: DataTypes.STRING,
     sexo: DataTypes.STRING,
-    usuarioId: DataTypes.INTEGER
+    usuarioId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'Mascota',
